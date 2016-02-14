@@ -1,0 +1,15 @@
+{
+  "name": "ValueDefiner",
+  "version": "1.0.0",
+  "main": "./js/src/ValueDefiner",
+  "dependencies": {
+    "combine": "aleclarson/combine#1.0.0",
+    "define": "aleclarson/define#1.0.0",
+    "emptyFunction": "aleclarson/emptyFunction#1.0.0",
+    "io": "aleclarson/io#1.0.0",
+    "lotus-require": "aleclarson/lotus-require#1.0.0",
+    "named-function": "aleclarson/named-function#1.0.3",
+    "steal": "aleclarson/steal#0.0.1",
+    "type-utils": "aleclarson/type-utils#1.0.0"
+  }
+}
