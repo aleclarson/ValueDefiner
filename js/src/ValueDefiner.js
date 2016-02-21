@@ -16,8 +16,8 @@ steal = require("steal");
 
 module.exports = ValueDefiner = function(config, types) {
   var definers;
-  definers = sync.map(types, function(ValueDefinerType) {
-    return ValueDefinerType(config);
+  definers = sync.map(types, function(createDefiner) {
+    return createDefiner(config);
   });
   return function(instance, args) {
     var definer, i, len;
@@ -52,109 +52,134 @@ ValueDefiner.Type = function(config) {
     }
     assertType(initValues, Function);
     return function(instance, args) {
-      var values;
-      values = initValues.apply(instance, args);
-      if (isType(values, Array)) {
-        values = combine.apply(null, values);
+      var error, values;
+      try {
+        values = initValues.apply(instance, args);
+        if (isType(values, Array)) {
+          values = combine.apply(null, values);
+        }
+        assertReturnType(values, Object, {
+          method: key,
+          instance: instance,
+          args: args
+        });
+        values = transform(values);
+        return define(instance, function() {
+          this.options = options;
+          return this(values);
+        });
+      } catch (_error) {
+        error = _error;
+        return reportFailure(error, {
+          method: instance.constructor.name + "." + key,
+          instance: instance,
+          args: args
+        });
       }
-      assertReturnType(values, Object, {
-        key: key
-      });
-      values = transform(values);
-      return define(instance, function() {
-        this.options = options;
-        return this(values);
-      });
     };
   };
 };
 
-ValueDefiner.types = [
-  ValueDefiner.Type({
-    key: "boundMethods",
-    init: function(keys) {
-      if (!isType(keys, Array)) {
-        return;
+ValueDefiner.types = [];
+
+ValueDefiner.createType = function(config) {
+  var type;
+  type = ValueDefiner.Type(config);
+  ValueDefiner.types.push(type);
+};
+
+ValueDefiner.createType({
+  key: "boundMethods",
+  init: function(keys) {
+    if (!isType(keys, Array)) {
+      return;
+    }
+    return function() {
+      var boundMethod, boundMethods, i, key, len, method;
+      boundMethods = {};
+      for (i = 0, len = keys.length; i < len; i++) {
+        key = keys[i];
+        method = this[key];
+        assertType(method, Function, {
+          key: this.constructor.name + "." + key,
+          instance: this
+        });
+        boundMethod = method.bind(this);
+        boundMethod.toString = function() {
+          return method.toString();
+        };
+        boundMethods[key] = {
+          value: boundMethod,
+          enumerable: key[0] !== "_"
+        };
       }
-      return function() {
-        var boundMethod, boundMethods, i, key, len, method;
-        boundMethods = {};
-        for (i = 0, len = keys.length; i < len; i++) {
-          key = keys[i];
-          method = this[key];
-          assertType(method, Function, {
-            key: this.constructor.name + "." + key,
-            instance: this
-          });
-          boundMethod = method.bind(this);
-          boundMethod.toString = function() {
-            return method.toString();
-          };
-          boundMethods[key] = {
-            value: boundMethod,
-            enumerable: key[0] !== "_"
-          };
-        }
-        return boundMethods;
+      return boundMethods;
+    };
+  }
+});
+
+ValueDefiner.createType({
+  key: "customValues",
+  init: function(values) {
+    var key, value;
+    if (!isType(values, Object)) {
+      return;
+    }
+    for (key in values) {
+      value = values[key];
+      assertType(value, Object);
+      value.enumerable = key[0] !== "_";
+    }
+    return function() {
+      return values;
+    };
+  }
+});
+
+ValueDefiner.createType({
+  key: "initFrozenValues",
+  options: {
+    frozen: true
+  },
+  transform: function(values) {
+    return sync.map(values, function(value, key) {
+      return {
+        value: value,
+        enumerable: key[0] !== "_"
       };
-    }
-  }), ValueDefiner.Type({
-    key: "customValues",
-    init: function(values) {
-      var key, value;
-      if (!isType(values, Object)) {
-        return;
-      }
-      for (key in values) {
-        value = values[key];
-        assertType(value, Object);
-        value.enumerable = key[0] !== "_";
-      }
-      return function() {
-        return values;
+    });
+  }
+});
+
+ValueDefiner.createType({
+  key: "initValues",
+  options: {
+    configurable: false
+  },
+  transform: function(values) {
+    return sync.map(values, function(value, key) {
+      return {
+        value: value,
+        enumerable: key[0] !== "_"
       };
-    }
-  }), ValueDefiner.Type({
-    key: "initFrozenValues",
-    options: {
-      frozen: true
-    },
-    transform: function(values) {
-      return sync.map(values, function(value, key) {
-        return {
-          value: value,
-          enumerable: key[0] !== "_"
-        };
-      });
-    }
-  }), ValueDefiner.Type({
-    key: "initValues",
-    options: {
-      configurable: false
-    },
-    transform: function(values) {
-      return sync.map(values, function(value, key) {
-        return {
-          value: value,
-          enumerable: key[0] !== "_"
-        };
-      });
-    }
-  }), ValueDefiner.Type({
-    key: "initReactiveValues",
-    options: {
-      reactive: true,
-      configurable: false
-    },
-    transform: function(values) {
-      return sync.map(values, function(value, key) {
-        return {
-          value: value,
-          enumerable: key[0] !== "_"
-        };
-      });
-    }
-  })
-];
+    });
+  }
+});
+
+ValueDefiner.createType({
+  key: "initReactiveValues",
+  options: {
+    reactive: true,
+    configurable: false
+  },
+  transform: function(values) {
+    return sync.map(values, function(value, key) {
+      return {
+        value: value,
+        enumerable: key[0] !== "_"
+      };
+    });
+  }
+});
 
 //# sourceMappingURL=../../map/src/ValueDefiner.map
