@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "WritableValueCreator.js",
+  "sourceRoot": "../../src",
+  "sources": [
+    "WritableValueCreator.coffee"
+  ],
+  "names": [],
+  "mappings": "AACA,IAAA;;AAAE,OAAS,OAAA,CAAQ,IAAR,EAAT;;AAEF,YAAA,GAAe,OAAA,CAAQ,gBAAR;;AAEf,MAAM,CAAC,OAAP,GAAiB,YAAA,CAAa,oBAAb,EAEf;EAAA,SAAA,EAAW,SAAC,MAAD;WACT,IAAI,CAAC,GAAL,CAAS,MAAT,EAAiB,SAAC,KAAD,EAAQ,GAAR;aAAgB;QAC/B,OAAA,KAD+B;QAE/B,YAAA,EAAc,KAFiB;QAG/B,UAAA,EAAY,GAAI,CAAA,CAAA,CAAJ,KAAY,GAHO;;IAAhB,CAAjB;EADS,CAAX;CAFe"
+}

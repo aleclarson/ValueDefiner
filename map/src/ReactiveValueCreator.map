@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ReactiveValueCreator.js",
+  "sourceRoot": "../../src",
+  "sources": [
+    "ReactiveValueCreator.coffee"
+  ],
+  "names": [],
+  "mappings": "AACA,IAAA;;AAAE,OAAS,OAAA,CAAQ,IAAR,EAAT;;AAEF,YAAA,GAAe,OAAA,CAAQ,gBAAR;;AAEf,MAAM,CAAC,OAAP,GAAiB,YAAA,CAAa,oBAAb,EAEf;EAAA,SAAA,EAAW,SAAC,MAAD;WACT,IAAI,CAAC,GAAL,CAAS,MAAT,EAAiB,SAAC,KAAD,EAAQ,GAAR;aAAgB;QAC/B,OAAA,KAD+B;QAE/B,QAAA,EAAU,IAFqB;QAG/B,YAAA,EAAc,KAHiB;QAI/B,UAAA,EAAY,GAAI,CAAA,CAAA,CAAJ,KAAY,GAJO;;IAAhB,CAAjB;EADS,CAAX;CAFe"
+}
