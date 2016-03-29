@@ -1,14 +1,10 @@
 
-{ sync } = require "io"
+sync = require "sync"
 
 ValueCreator = require "./ValueCreator"
 
-module.exports = ValueCreator "FrozenValueCreator",
+module.exports = ValueCreator "ReactiveValueCreator",
 
   transform: (values) ->
-    sync.map values, (value, key) -> {
-      value
-      reactive: yes
-      configurable: no
-      enumerable: key[0] isnt "_"
-    }
+    sync.map values, (value, key) ->
+      { value, reactive: yes }

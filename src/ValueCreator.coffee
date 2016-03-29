@@ -4,8 +4,7 @@
   setType
   setKind
   assertType
-  validateTypes
-  assertReturnType } = require "type-utils"
+  validateTypes } = require "type-utils"
 
 NamedFunction = require "named-function"
 emptyFunction = require "emptyFunction"
@@ -35,7 +34,7 @@ ValueCreator = NamedFunction "ValueCreator", (name, creatorConfig) ->
 
     creator = (instance, args) ->
       values = createValues.apply instance, args
-      assertReturnType values, [ Object, Array ]
+      assertType values, [ Object, Array ]
       values = combine.apply null, values if isType values, Array
       creatorConfig.transform values, options
 

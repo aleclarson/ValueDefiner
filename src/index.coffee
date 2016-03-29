@@ -1,6 +1,4 @@
 
-require "lotus-require"
-
 define = require "define"
 
 define exports,

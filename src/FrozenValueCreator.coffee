@@ -1,13 +1,10 @@
 
-{ sync } = require "io"
+sync = require "sync"
 
 ValueCreator = require "./ValueCreator"
 
 module.exports = ValueCreator "FrozenValueCreator",
 
   transform: (values) ->
-    sync.map values, (value, key) -> {
-      value
-      frozen: yes
-      enumerable: key[0] isnt "_"
-    }
+    sync.map values, (value, key) ->
+      { value, frozen: yes }

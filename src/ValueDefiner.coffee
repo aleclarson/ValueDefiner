@@ -5,18 +5,17 @@
   setType
   setKind
   assertType
-  assertKind
-  validateTypes
-  assertReturnType } = require "type-utils"
+  validateTypes } = require "type-utils"
 
 { throwFailure } = require "failure"
 
-{ sync } = require "io"
+sync = require "sync"
 
 NamedFunction = require "named-function"
 emptyFunction = require "emptyFunction"
 combine = require "combine"
 define = require "define"
+isDev = require "isDev"
 
 ValueCreator = require "./ValueCreator"
 
@@ -29,32 +28,27 @@ ValueDefiner = NamedFunction "ValueDefiner", (classConfig, options) ->
     defineValues: [ Function, Void ]
     didDefineValues: [ Function, Void ]
 
-  { valueCreatorTypes, defineValues, didDefineValues } = options
-
   valueCreators = {}
-  for key, initValueCreator of valueCreatorTypes
-    assertKind initValueCreator, Function
-    valueCreator = initValueCreator classConfig, key
-    if isKind valueCreator, Function
-      valueCreators[key] = valueCreator
+  sync.each options.valueCreatorTypes, (ValueCreator, key) ->
+    valueCreator = ValueCreator classConfig, key
+    valueCreators[key] = valueCreator if valueCreator
 
-  defineValues ?= (valueConfigs) ->
+  options.defineValues ?= (valueConfigs) ->
     define this, valueConfigs
 
   definer = (instance, args) ->
-    definedValues = {} if didDefineValues?
-    for key, createValues of valueCreators
+    definedValues = {} if options.didDefineValues
+    sync.each valueCreators, (createValues, key) ->
       try
         valueConfigs = createValues instance, args
-        if valueConfigs?
-          assertType valueConfigs, Object
-          if didDefineValues?
-            for key, config of valueConfigs
-              definedValues[key] = combine {}, config
-          defineValues.call instance, valueConfigs, key, valueCreatorTypes[key]
-      catch error
-        throwFailure error, { key }
-    didDefineValues?.call instance, definedValues
+        return unless valueConfigs
+        assertType valueConfigs, Object
+        if options.didDefineValues
+          sync.each valueConfigs, (config, key) ->
+            definedValues[key] = combine {}, config
+        options.defineValues.call instance, valueConfigs, key, options.valueCreatorTypes[key]
+      catch error then throwFailure error, { key }
+    options.didDefineValues?.call instance, definedValues
     instance
 
   setType definer, ValueDefiner
