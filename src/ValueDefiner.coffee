@@ -1,7 +1,5 @@
 
 { Void
-  isType
-  isKind
   setType
   setKind
   assertType
@@ -9,13 +7,13 @@
 
 { throwFailure } = require "failure"
 
-sync = require "sync"
-
 NamedFunction = require "named-function"
 emptyFunction = require "emptyFunction"
 combine = require "combine"
 define = require "define"
 isDev = require "isDev"
+guard = require "guard"
+sync = require "sync"
 
 ValueCreator = require "./ValueCreator"
 
@@ -39,7 +37,7 @@ ValueDefiner = NamedFunction "ValueDefiner", (classConfig, options) ->
   definer = (instance, args) ->
     definedValues = {} if options.didDefineValues
     sync.each valueCreators, (createValues, key) ->
-      try
+      guard ->
         valueConfigs = createValues instance, args
         return unless valueConfigs
         assertType valueConfigs, Object
@@ -47,7 +45,7 @@ ValueDefiner = NamedFunction "ValueDefiner", (classConfig, options) ->
           sync.each valueConfigs, (config, key) ->
             definedValues[key] = combine {}, config
         options.defineValues.call instance, valueConfigs, key, options.valueCreatorTypes[key]
-      catch error then throwFailure error, { key }
+      .fail (error) -> throwFailure error, { key }
     options.didDefineValues?.call instance, definedValues
     instance
 
