@@ -2,7 +2,7 @@ var NamedFunction, ValueCreator, Void, assertType, combine, emptyFunction, isTyp
 
 ref = require("type-utils"), Void = ref.Void, isType = ref.isType, setType = ref.setType, setKind = ref.setKind, assertType = ref.assertType, validateTypes = ref.validateTypes;
 
-NamedFunction = require("named-function");
+NamedFunction = require("NamedFunction");
 
 emptyFunction = require("emptyFunction");
 

@@ -6,7 +6,7 @@
   assertType
   validateTypes } = require "type-utils"
 
-NamedFunction = require "named-function"
+NamedFunction = require "NamedFunction"
 emptyFunction = require "emptyFunction"
 combine = require "combine"
 steal = require "steal"

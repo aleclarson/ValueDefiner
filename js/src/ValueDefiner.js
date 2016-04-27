@@ -4,7 +4,7 @@ ref = require("type-utils"), Void = ref.Void, setType = ref.setType, setKind = r
 
 throwFailure = require("failure").throwFailure;
 
-NamedFunction = require("named-function");
+NamedFunction = require("NamedFunction");
 
 emptyFunction = require("emptyFunction");
 

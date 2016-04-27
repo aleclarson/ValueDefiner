@@ -7,7 +7,7 @@
 
 { throwFailure } = require "failure"
 
-NamedFunction = require "named-function"
+NamedFunction = require "NamedFunction"
 emptyFunction = require "emptyFunction"
 combine = require "combine"
 define = require "define"
