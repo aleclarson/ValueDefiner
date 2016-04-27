@@ -1,0 +1,15 @@
+{
+  "name": "ValueDefiner",
+  "version": "1.0.0",
+  "main": "./js/src/index",
+  "dependencies": {
+    "NamedFunction": "aleclarson/NamedFunction#2.0.0",
+    "combine": "aleclarson/combine#1.0.0",
+    "define": "aleclarson/define#1.0.0",
+    "emptyFunction": "aleclarson/emptyFunction#1.0.0",
+    "failure": "aleclarson/failure#1.0.0",
+    "guard": "aleclarson/guard#1.0.0",
+    "sync": "aleclarson/sync#1.0.0",
+    "type-utils": "aleclarson/type-utils#1.0.0"
+  }
+}
